@@ -25,7 +25,7 @@ class Income(Transaction):
 class Expense(Transaction):
     def get_details(self):
         return f"[EXPENSE] {super().get_details()}"
-
+'''
 def save_data(history):
     """Saves the current list of transactions to a JSON file."""
     data_to_save = []
@@ -37,11 +37,11 @@ def save_data(history):
             "category": item.category,
             "date": item.date
         })
-    
+
     with open(FILE_NAME, "w") as f:
         json.dump(data_to_save, f)
     print("Data saved successfully.")
-
+'''
 def load_data():
     """Loads transactions from the JSON file if it exists."""
     history = []
