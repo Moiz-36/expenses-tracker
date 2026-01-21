@@ -1,32 +1,18 @@
 import math
 from datetime import datetime
-
-# Requirement: OOP - Parent Class
-class Transaction:
-    def __init__(self, amount: float, category: str, date: str):
-        # Requirement: Primitives (float, str)
-        self.amount = amount
-        self.category = category
-        self.date = date
-        self.is_verified = True # Requirement: Primitive (bool)
-
-    def get_details(self):
-        return f"[{self.date}] {self.category}: ${self.amount:.2f}"
-
-# Requirement: OOP - Child Class 1 (Inheritance)
-class Income(Transaction):
-    # Requirement: Polymorphism (Overriding method)
-    def get_details(self):
-        return f"[INCOME] {super().get_details()}"
-
-# Requirement: OOP - Child Class 2 (Inheritance)
-class Expense(Transaction):
-    def get_details(self):
-        return f"[EXPENSE] {super().get_details()}"
-
+from tracker import load_data, save_data, clear_data, Transaction, Income, Expense
+12
 def run_tracker():
     # Requirement: Load existing data at startup
     history = load_data()
+    summary = {"total_income": 0, "total_expense": 0}
+    
+    # Calculate summary from loaded data
+    for transaction in history:
+        if isinstance(transaction, Income):
+            summary["total_income"] += transaction.amount
+        else:
+            summary["total_expense"] += transaction.amount
     
     active = True
     while active:
@@ -40,21 +26,30 @@ def run_tracker():
         choice = input("Select an option: ")
 
         if choice == "1":
-            # (Logic to add income/expense)
-            pass 
+            print("Is this income (1) or expense (2)?")
+            trans_type = input("Enter 1 for income, 2 for expense: ")
+            if trans_type in ["1", "2"]:
+                handle_transaction(int(trans_type), history, summary)
+            else:
+                print("Invalid choice.")
         elif choice == "2":
-            # (Logic to print history)
-            pass
+            display_summary(history, summary)
         elif choice == "3":
             save_data(history)
+            print("Data saved!")
         elif choice == "4":
             confirm = input("Are you sure? This cannot be undone! (y/n): ")
             if confirm.lower() == 'y':
                 clear_data()
                 history = [] # Reset the current session list
+                summary = {"total_income": 0, "total_expense": 0} # Reset summary
+                print("All data cleared!")
         elif choice == "5":
             save_data(history) # Auto-save on exit
             active = False
+            print("Goodbye!")
+        else:
+            print("Invalid option. Please try again.")
 def handle_transaction(choice, history, summary):
     try:
         amt = float(input("Enter amount: "))
