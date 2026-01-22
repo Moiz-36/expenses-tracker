@@ -1,6 +1,6 @@
-
 import json
 import os
+
 
 FILE_NAME = "finance_data.json"
 
@@ -41,6 +41,20 @@ def load_data():
     
     return history
 
+def save_data(history):
+    """Saves the current list of transactions to a JSON file."""
+    data_to_save = []
+    for item in history:
+        # Converting objects to dictionaries for JSON
+        data_to_save.append({
+            "type": type(item).__name__,
+            "amount": item.amount,
+            "category": item.category,
+            "date": item.date
+        })
+    with open(FILE_NAME, "w") as f:
+        json.dump(data_to_save, f)
+
 def clear_data():
     """Deletes the saved data file."""
     if os.path.exists(FILE_NAME):
@@ -48,3 +62,4 @@ def clear_data():
         print("All previous data has been deleted.")
     else:
         print("No data file found to delete.")
+        
